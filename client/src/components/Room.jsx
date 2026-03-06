@@ -66,13 +66,17 @@ function Room({ roomId }) {
         peer.on('call', (call) => {
             try {
                 call.answer(null) // members don't send stream back
-                call.on('stream', (remoteStream) => {
-                    if (remoteVideoRef.current) {
+                peer.on('call', (call) => {
+                    call.answer()
+                    call.on('stream', (remoteStream) => {
                         remoteVideoRef.current.srcObject = remoteStream
-                        setActive('active') // Show the video container when stream is received
-                    } else {
-                        console.error('Guest: remoteVideoRef is not available')
-                    }
+                        remoteVideoRef.current.muted = true
+                        remoteVideoRef.current.play().catch(err => {
+                            console.log('Autoplay blocked:', err)
+                            // Show a "tap to play" button as fallback
+                            // setShowPlayButton(true)
+                        })
+                    })
                 })
                 call.on('error', (err) => {
                     console.error('Guest: Call error:', err)
@@ -97,7 +101,7 @@ function Room({ roomId }) {
 
             // Only host calls the new member
             if (memberStatus !== 'host') return
-            
+
             if (!streamRef.current) {
                 return // host hasn't loaded a video yet
             }
@@ -138,7 +142,7 @@ function Room({ roomId }) {
             try {
                 await hostVideoRef.current.play()
                 const stream = hostVideoRef.current.captureStream()
-                
+
                 if (!stream || !stream.active) {
                     console.error('Host: Failed to capture stream or stream is inactive')
                     return
@@ -188,10 +192,12 @@ function Room({ roomId }) {
             }</p>
             <div className="video-container">
                 <div className={`box ${active}`}>
-                    <video 
+                    <video
                         ref={memberStatus === 'host' ? hostVideoRef : remoteVideoRef}
+                        autoPlay
+                        muted
                         controls
-                     />
+                    />
                 </div>
                 {
                     memberStatus === 'host'
