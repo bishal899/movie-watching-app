@@ -1,3 +1,3 @@
 import { io } from 'socket.io-client'
 
-export const socket = io('http://localhost:4001')
+export const socket = io('https://movie-watching-app.onrender.com')
