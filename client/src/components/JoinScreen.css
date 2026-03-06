@@ -1,0 +1,75 @@
+.join-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.join-screen p {
+    font-size: 14px;
+    text-transform: capitalize;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.join-screen .join-input {
+    display: flex;
+    width: 90%;
+    max-width: 300px;
+}
+
+.join-input input {
+    flex: 1;
+    background: none;
+    border: 1px solid #d0dce4;
+    border-right: none;
+    outline: none;
+    padding: 12px 14px;
+    color: #d0dce4;
+    font-size: 16px;
+}
+
+.join-input input::placeholder {
+    text-transform: capitalize;
+}
+
+.join-input button {
+    padding: 12px 20px;
+    outline: none;
+    border: 1px solid #d0dce4;
+    background-color: #d0dce4;
+    color: #1d1d1d;
+    text-transform: capitalize;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.join-input button:active {
+    transform: scale(0.98);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .join-screen {
+        padding: 1.5rem;
+    }
+
+    .join-screen p {
+        font-size: 13px;
+        margin-bottom: 1.5rem;
+    }
+
+    .join-screen .join-input {
+        width: 95%;
+        max-width: 280px;
+    }
+
+    .join-input input,
+    .join-input button {
+        padding: 14px;
+        font-size: 16px;
+    }
+}

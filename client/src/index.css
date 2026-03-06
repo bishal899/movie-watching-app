@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mobile optimizations */
+button, input, textarea, select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Ensure proper touch interactions */
+@media (max-width: 768px) {
+  button, input {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 16px;
+  }
+}

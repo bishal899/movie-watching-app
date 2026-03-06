@@ -1,0 +1,27 @@
+.people {
+    display: flex;
+    align-items: center;
+    background-color: #242424;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.people p {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.people p span {
+    margin-right: 8px;
+    font-size: 10px;
+    color: #BFC9D190;
+}
+
+.people .user {
+    /* height: 12px; */
+    margin: 4px;
+    color: rgb(140, 252, 106);
+}

@@ -1,0 +1,77 @@
+.side-panel:has(.left-button.active) {
+    width: 100%;
+    font-size: 12px;
+}
+
+.side-panel > .heading {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: capitalize;
+    width: 100%;
+}
+
+.heading .left-button {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.heading .left-button:active {
+    transform: scale(0.9);
+}
+
+.heading .left-button:hover {
+    color: #bfc9d1ab;
+}
+
+.heading .left-button.active {
+    transform: rotate(180deg);
+}
+
+.heading:has(.left-button.active) {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1rem;
+    width: 100%;
+}
+
+.divider {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    max-height: 35vh;
+}
+
+.chat-section,
+.people-section {
+    width: 100%;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .side-panel:has(.left-button.active) {
+        width: 100%;
+        font-size: 11px;
+    }
+
+    .side-panel > .heading {
+        margin-bottom: 0.8rem;
+    }
+
+    .heading:has(.left-button.active) {
+        gap: 0.8rem;
+    }
+
+    .divider {
+        gap: 0.8rem;
+        max-height: 30vh;
+    }
+}
