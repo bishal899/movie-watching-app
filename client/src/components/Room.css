@@ -1,6 +1,3 @@
-/* removed generic .side-panel rules – sidebar has been refactored into its own
-   component and stylesheet (aside-panel) to avoid styling conflicts */
-
 .room {
     display: flex;
     flex-direction: column;
@@ -111,7 +108,6 @@ video {
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    /* mobile: make the aside full width when it's present */
     .aside-panel {
         width: 100%;
         padding: 10px;

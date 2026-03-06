@@ -15,14 +15,12 @@ body {
   overflow: hidden;
 }
 
-/* Mobile optimizations */
 button, input, textarea, select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-/* Ensure proper touch interactions */
 @media (max-width: 768px) {
   button, input {
     min-height: 44px;

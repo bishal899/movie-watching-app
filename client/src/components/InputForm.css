@@ -37,7 +37,6 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
-/* file label to trigger file picker */
 .input-container label {
     flex: 1;
     padding: 14px 0;
