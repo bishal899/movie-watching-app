@@ -21,6 +21,16 @@ function Room({ roomId }) {
     const remoteVideoRef = useRef(null) // to set the srcObject when a stream is received from the host
     const hostVideoRef = useRef(null) // to set the src and capture stream when the host loads a video
     const streamRef = useRef(null)
+    const [showPlayButton, setShowPlayButton] = useState(false)
+
+    function createFakeStream() {
+        const audioContext = new AudioContext()
+        const oscillator = audioContext.createOscillator()
+        const destination = audioContext.createMediaStreamDestination()
+        oscillator.connect(destination)
+        oscillator.start()
+        return destination.stream
+    }
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -57,26 +67,16 @@ function Room({ roomId }) {
 
         // when a call is received, answer it and set the remote stream to the video element
         peer.on('call', (call) => {
-            try {
-                call.answer(null) // members don't send stream back
-                peer.on('call', (call) => {
-                    call.answer()
-                    call.on('stream', (remoteStream) => {
-                        remoteVideoRef.current.srcObject = remoteStream
-                        remoteVideoRef.current.muted = true
-                        remoteVideoRef.current.play().catch(err => {
-                            console.log('Autoplay blocked:', err)
-                            // Show a "tap to play" button as fallback
-                            // setShowPlayButton(true)
-                        })
-                    })
+            call.answer(createFakeStream()) // ← answer with fake stream, not empty
+
+            call.on('stream', (remoteStream) => {
+                remoteVideoRef.current.srcObject = remoteStream
+
+                // Force play and handle autoplay block
+                remoteVideoRef.current.play().catch(() => {
+                    setShowPlayButton(true) // show manual play button
                 })
-                call.on('error', (err) => {
-                    console.error('Guest: Call error:', err)
-                })
-            } catch (err) {
-                console.error('Guest: Error answering call:', err)
-            }
+            })
         })
 
         peer.on('error', (err) => {
@@ -191,6 +191,15 @@ function Room({ roomId }) {
                         muted
                         controls
                     />
+                    {showPlayButton && (
+                        <button onClick={() => {
+                            remoteVideoRef.current.muted = false
+                            remoteVideoRef.current.play()
+                            setShowPlayButton(false)
+                        }}>
+                            ▶ Tap to Watch
+                        </button>
+                    )}
                 </div>
                 {
                     memberStatus === 'host'
