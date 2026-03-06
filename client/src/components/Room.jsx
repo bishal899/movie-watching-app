@@ -21,16 +21,6 @@ function Room({ roomId }) {
     const remoteVideoRef = useRef(null) // to set the srcObject when a stream is received from the host
     const hostVideoRef = useRef(null) // to set the src and capture stream when the host loads a video
     const streamRef = useRef(null)
-    const [showPlayButton, setShowPlayButton] = useState(false)
-
-    function createFakeStream() {
-        const audioContext = new AudioContext()
-        const oscillator = audioContext.createOscillator()
-        const destination = audioContext.createMediaStreamDestination()
-        oscillator.connect(destination)
-        oscillator.start()
-        return destination.stream
-    }
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -49,9 +39,16 @@ function Room({ roomId }) {
                 iceServers: [
                     // STUN servers for NAT detection
                     { urls: ['stun:stun.l.google.com:19302'] },
+                    { urls: ['stun:stun1.l.google.com:19302'] },
+                    { urls: ['stun:stun2.l.google.com:19302'] },
                     // Free TURN server for relay when P2P fails
                     {
                         urls: ['turn:openrelay.metered.ca:80'],
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    },
+                    {
+                        urls: ['turn:openrelay.metered.ca:443'],
                         username: 'openrelayproject',
                         credential: 'openrelayproject'
                     }
@@ -67,20 +64,40 @@ function Room({ roomId }) {
 
         // when a call is received, answer it and set the remote stream to the video element
         peer.on('call', (call) => {
-            call.answer(createFakeStream()) // ← answer with fake stream, not empty
+            console.log('Guest: Received call from peer:', call.peer)
+            try {
+                call.answer(null) // members don't send stream back
+                console.log('Guest: Answered call successfully')
 
-            call.on('stream', (remoteStream) => {
-                remoteVideoRef.current.srcObject = remoteStream
-
-                // Force play and handle autoplay block
-                remoteVideoRef.current.play().catch(() => {
-                    setShowPlayButton(true) // show manual play button
+                call.on('stream', (remoteStream) => {
+                    console.log('Guest: Received remote stream with tracks:', remoteStream.getTracks().length)
+                    if (remoteVideoRef.current) {
+                        remoteVideoRef.current.srcObject = remoteStream
+                        setActive('active') // Show the video container when stream is received
+                        console.log('Guest: Stream set to video element successfully')
+                    } else {
+                        console.error('Guest: remoteVideoRef is not available')
+                    }
                 })
-            })
+
+                call.on('error', (err) => {
+                    console.error('Guest: Call error:', err)
+                })
+
+                call.on('close', () => {
+                    console.log('Guest: Call closed')
+                })
+            } catch (err) {
+                console.error('Guest: Error answering call:', err)
+            }
         })
 
         peer.on('error', (err) => {
-            console.error('Peer error:', err)
+            console.error('Peer connection error:', err)
+        })
+
+        peer.on('disconnected', () => {
+            console.warn('Peer disconnected')
         })
 
         // clean up function to destroy the peer when the component unmounts
@@ -89,24 +106,35 @@ function Room({ roomId }) {
 
     useEffect(() => {
         socket.on('peer-joined', ({ peerId }) => {
+            console.log('Host: Peer joined event received:', peerId, 'memberStatus:', memberStatus)
+
             // Store the peer ID when any peer joins
             setPeerIds(prev => [...prev, peerId])
 
             // Only host calls the new member
-            if (memberStatus !== 'host') return
+            if (memberStatus !== 'host') {
+                console.log('Not host, skipping call')
+                return
+            }
 
             if (!streamRef.current) {
+                console.log('Host: No stream yet, returning. Guest peerId stored:', peerId)
                 return // host hasn't loaded a video yet
             }
 
-            // console.log('Host: Calling peer with stream:', peerId)
+            console.log('Host: Calling peer with stream:', peerId)
             try {
                 const call = peerRef.current.call(peerId, streamRef.current)
+                console.log('Host: Call object created:', !!call)
+
                 call.on('stream', () => {
                     console.log('Host: member connected to stream')
                 })
                 call.on('error', (err) => {
                     console.error('Host: Call error:', err)
+                })
+                call.on('close', () => {
+                    console.log('Host: Call to peer', peerId, 'closed')
                 })
             } catch (err) {
                 console.error('Host: Error calling peer:', err)
@@ -125,46 +153,73 @@ function Room({ roomId }) {
     function handleActiveBox() {
         if (!inputUrl.trim()) return
         setActive('active')
-        // console.log('activating box with url:', inputUrl)
+        console.log('Host: Loading video from:', inputUrl)
         // setUrl(inputUrl)
 
         hostVideoRef.current.src = inputUrl
         hostVideoRef.current.muted = false
+        hostVideoRef.current.crossOrigin = 'anonymous'
 
         hostVideoRef.current.onloadedmetadata = async () => {
+            console.log('Host: Video metadata loaded')
             try {
-                await hostVideoRef.current.play()
-                const stream = hostVideoRef.current.captureStream()
+                const playPromise = await hostVideoRef.current.play()
+                console.log('Host: Video playing', playPromise)
 
-                if (!stream || !stream.active) {
-                    console.error('Host: Failed to capture stream or stream is inactive')
+                const stream = hostVideoRef.current.captureStream(30) // 30 FPS
+                console.log('Host: captureStream returned:', !!stream)
+                
+                if (!stream) {
+                    console.error('Host: captureStream returned null')
                     return
                 }
 
+                const tracks = stream.getTracks()
+                console.log('Host: Stream tracks count:', tracks.length)
+
+                if (tracks.length === 0) {
+                    console.error('Host: Stream has no tracks')
+                    return
+                }
+
+                tracks.forEach((track, index) => {
+                    console.log(`Host: Track ${index}:`, track.kind, 'enabled:', track.enabled)
+                })
+
                 streamRef.current = stream // store it so late joiners can be called
-                // console.log('Host: Stream captured successfully. Active tracks:', stream.getTracks().length)
+                console.log('Host: Stream stored in ref')
 
                 // Call all existing peers (handles late joiners)
                 if (peerIds.length > 0) {
+                    console.log('Host: Calling', peerIds.length, 'existing peers')
                     peerIds.forEach(peerId => {
                         try {
+                            console.log('Host: Calling peer:', peerId)
                             const call = peerRef.current.call(peerId, stream)
+
                             call.on('stream', () => {
-                                console.log('Host: peer connected to stream:', peerId)
+                                console.log('Host: peer connected and sent stream:', peerId)
                             })
                             call.on('error', (err) => {
                                 console.error('Host: Call error for peer', peerId, ':', err)
+                            })
+                            call.on('close', () => {
+                                console.log('Host: Call to peer', peerId, 'closed')
                             })
                         } catch (err) {
                             console.error('Host: Error calling peer', peerId, ':', err)
                         }
                     })
                 } else {
-                    console.log('Host: No peers in room yet')
+                    console.log('Host: No peers in room yet, waiting for guests to join')
                 }
             } catch (err) {
                 console.error('Host: Error loading video or capturing stream:', err)
             }
+        }
+
+        hostVideoRef.current.onerror = (error) => {
+            console.error('Host: Video error:', error)
         }
     }
 
@@ -185,21 +240,10 @@ function Room({ roomId }) {
             }</p>
             <div className="video-container">
                 <div className={`box ${active}`}>
-                    <video
+                    <video 
                         ref={memberStatus === 'host' ? hostVideoRef : remoteVideoRef}
-                        autoPlay
-                        muted
                         controls
-                    />
-                    {showPlayButton && (
-                        <button onClick={() => {
-                            remoteVideoRef.current.muted = false
-                            remoteVideoRef.current.play()
-                            setShowPlayButton(false)
-                        }}>
-                            ▶ Tap to Watch
-                        </button>
-                    )}
+                     />
                 </div>
                 {
                     memberStatus === 'host'
