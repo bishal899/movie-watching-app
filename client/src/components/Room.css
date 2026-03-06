@@ -112,7 +112,7 @@ video {
         width: 100%;
         padding: 10px;
         height: auto;
-        max-height: 40vh;
+        max-height: 50vh;
         overflow-y: auto;
     }
 
