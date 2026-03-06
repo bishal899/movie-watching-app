@@ -64,6 +64,7 @@
     .aside-panel.collapsed {
         width: 100%;
         font-size: 0;
+        margin-bottom: 30px;
     }
 
     .aside-panel > .heading {
