@@ -1,5 +1,5 @@
 import './ChatSection.css'
-import { FaAngleDown } from "react-icons/fa6";
+// import { FaAngleDown } from "react-icons/fa6";
 import { FaUserCircle } from "react-icons/fa";
 import { BiSend } from "react-icons/bi";
 import { useContext, useState } from 'react';
@@ -21,7 +21,7 @@ function ChatSection() {
         <div className="chat-section">
             <div className="heading">
                 <p>chat</p>
-                <FaAngleDown />
+                {/* <FaAngleDown /> */}
             </div>
             <div className="chat-container">
                 <div className="messages-container">

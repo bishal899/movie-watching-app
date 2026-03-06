@@ -1,5 +1,5 @@
 import './PeopleSection.css'
-import { FaAngleDown } from "react-icons/fa6";
+// import { FaAngleDown } from "react-icons/fa6";
 import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
 import People from './People';
@@ -16,7 +16,7 @@ function PeopleSection() {
         <div className="people-section">
             <div className="heading">
                 <p>people</p>
-                <FaAngleDown />
+                {/* <FaAngleDown /> */}
             </div>
             <div className="people-container">
                 {

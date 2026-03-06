@@ -6,23 +6,28 @@ import { useContext, useState } from 'react';
 import { UserContext } from '../../UserContext';
 
 export default function Aside() {
-    const usersContext = useContext(UserContext)
-    const username = usersContext.username
-    const [active, setActive] = useState(true)
+    const { username } = useContext(UserContext)
+    // `open` tracks whether the panel is expanded. default true so users see the sections.
+    const [open, setOpen] = useState(true)
+
     return (
-        <aside className="side-panel">
+        <aside className={`aside-panel ${open ? 'open' : 'collapsed'}`}>
             <div className="heading">
-                <p>{username}</p>
-                <LuPanelLeftClose className={`left-button ${active ? 'active' : ''}`} size={20} onClick={() => setActive(!active)} />
+                {/* hide the name when collapsed to save space */}
+                {open && <p>{username}</p>}
+                <LuPanelLeftClose
+                    className={`toggle-btn ${open ? '' : 'rotated'}`}
+                    size={20}
+                    onClick={() => setOpen(o => !o)}
+                />
             </div>
-            {
-                !active && 
+
+            {open && (
                 <div className="divider">
                     <PeopleSection />
                     <ChatSection />
                 </div>
-            }
-            
+            )}
         </aside>
     )
 }

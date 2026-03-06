@@ -38,17 +38,22 @@
 .join-input button {
     padding: 12px 20px;
     outline: none;
-    border: 1px solid #d0dce4;
-    background-color: #d0dce4;
-    color: #1d1d1d;
+    border: none;
+    background: linear-gradient(135deg, #d0dce4 0%, #bfc9d1 100%);
+    color: #242424;
     text-transform: capitalize;
     font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
+.join-input button:hover {
+    box-shadow: 0 4px 12px rgba(208, 220, 228, 0.3);
+}
+
 .join-input button:active {
-    transform: scale(0.98);
+    transform: scale(0.96);
 }
 
 /* Mobile responsive */

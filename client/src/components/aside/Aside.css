@@ -1,52 +1,52 @@
-.side-panel:has(.left-button.active) {
-    width: 100%;
+.aside-panel {
+    width: 250px;
+    transition: width 0.25s ease, font-size 0.25s ease;
     font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.5);
+    background-color: #242424;
 }
 
-.side-panel > .heading {
+/* collapse state: narrow strip */
+.aside-panel.collapsed {
+    width: 40px;
+    font-size: 0; /* hide text
+                     we still keep the toggle button visible */
+}
+
+.aside-panel > .heading {
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.heading p {
+    margin: 0;
     text-transform: capitalize;
-    width: 100%;
 }
 
-.heading .left-button {
+.toggle-btn {
     cursor: pointer;
     transition: transform 0.2s ease;
 }
 
-.heading .left-button:active {
+.toggle-btn:active {
     transform: scale(0.9);
 }
 
-.heading .left-button:hover {
-    color: #bfc9d1ab;
-}
-
-.heading .left-button.active {
+.toggle-btn.rotated {
     transform: rotate(180deg);
 }
 
-.heading:has(.left-button.active) {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-}
-
 .divider {
+    flex: 1; /* fill whatever space is available inside the panel */
     display: flex;
     flex-direction: column;
     gap: 1rem;
     overflow-y: auto;
-    max-height: 35vh;
 }
 
 .chat-section,
@@ -56,17 +56,19 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    .side-panel:has(.left-button.active) {
+    .aside-panel {
         width: 100%;
         font-size: 11px;
+        padding: 10px;
     }
 
-    .side-panel > .heading {
+    .aside-panel.collapsed {
+        width: 100%;
+        font-size: 0; /* hide text but keep bar */
+    }
+
+    .aside-panel > .heading {
         margin-bottom: 0.8rem;
-    }
-
-    .heading:has(.left-button.active) {
-        gap: 0.8rem;
     }
 
     .divider {

@@ -1,40 +1,56 @@
 .input-form-section {
     text-align: center;
     text-transform: capitalize;
-    padding: 1rem;
+    padding: 2rem 1rem;
+    flex-shrink: 0;
 }
 
 .input-form-section h3 {
     font-size: 1.2rem;
     font-weight: 400;
-    padding: 1rem 0;
-}
-
-.input-form-section input {
-    padding: 12px 14px;
-    background: none;
-    border: none;
-    outline: none;
+    padding: 0 0 1.5rem 0;
+    margin: 0;
     color: #BFC9D1;
-    font-size: 14px;
 }
 
-.input-form-section input::placeholder {
-    text-transform: capitalize;
+.input-form-section input[type="file"] {
+    display: none; /* hide the native file input */
 }
 
 .input-container {
     width: 90%;
-    max-width: 320px;
-    background: none;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin: auto;
-    padding: 0 12px;
+    padding: 0 16px;
+    gap: 12px;
+    transition: all 0.25s ease;
+}
+
+.input-container:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* file label to trigger file picker */
+.input-container label {
+    flex: 1;
+    padding: 14px 0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #BFC9D1;
+    display: block;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .input-container button {
@@ -45,27 +61,39 @@
     padding: 8px;
     cursor: pointer;
     font-size: 18px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.input-container button:hover {
+    color: #d0dce4;
+    transform: translateX(4px);
+}
+
+.input-container button:active {
+    transform: scale(0.95);
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
     .input-form-section {
-        padding: 1.2rem;
+        padding: 1.5rem 1rem;
     }
 
     .input-form-section h3 {
         font-size: 1.1rem;
-        padding: 0.8rem 0;
-    }
-
-    .input-form-section input {
-        padding: 12px;
-        font-size: 16px;
+        padding: 0 0 1rem 0;
     }
 
     .input-container {
         width: 95%;
-        max-width: 300px;
-        padding: 0 14px;
+        max-width: 360px;
+        padding: 0 12px;
+        gap: 10px;
+    }
+
+    .input-container label {
+        padding: 12px 0;
+        font-size: 13px;
     }
 }
