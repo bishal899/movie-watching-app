@@ -8,7 +8,7 @@ const httpServer = createServer(app)
 // creating socket server
 const io = new Server(httpServer, {
     cors: {
-        origin: 'https://movie-watching-app.vercel.app/'
+        origin: ["http://localhost:5173", "https://movie-watching-app.vercel.app"]
     }
 })
 
