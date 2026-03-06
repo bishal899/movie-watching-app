@@ -58,6 +58,7 @@
         width: 100%;
         font-size: 11px;
         padding: 10px;
+        height: 100%;
     }
 
     .aside-panel.collapsed {
@@ -71,6 +72,17 @@
 
     .divider {
         gap: 0.8rem;
-        max-height: 30vh;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .chat-section {
+        flex: 1;
+        min-height: 200px;
+    }
+
+    .chat-container {
+        height: 100%;
+        flex: 1;
     }
 }

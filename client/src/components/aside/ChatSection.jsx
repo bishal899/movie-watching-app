@@ -2,7 +2,7 @@ import './ChatSection.css'
 // import { FaAngleDown } from "react-icons/fa6";
 import { FaUserCircle } from "react-icons/fa";
 import { BiSend } from "react-icons/bi";
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { UserContext } from '../../UserContext';
 import { socket } from '../../socket';
 
@@ -11,6 +11,15 @@ function ChatSection() {
     const messages = userProps.messages
     const username = userProps.username
     const [input, setInput] = useState('')
+    const messagesEndRef = useRef(null)
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
 
     function sendMessage() {
         socket.emit('send-message', username, input)
@@ -43,6 +52,7 @@ function ChatSection() {
                                 </div>
                         ))
                     }
+                    <div ref={messagesEndRef} />
 
                     {/* <div className="message">
                         <FaUserCircle className='user' size={18} />
