@@ -39,16 +39,9 @@ function Room({ roomId }) {
                 iceServers: [
                     // STUN servers for NAT detection
                     { urls: ['stun:stun.l.google.com:19302'] },
-                    { urls: ['stun:stun1.l.google.com:19302'] },
-                    { urls: ['stun:stun2.l.google.com:19302'] },
                     // Free TURN server for relay when P2P fails
                     {
                         urls: ['turn:openrelay.metered.ca:80'],
-                        username: 'openrelayproject',
-                        credential: 'openrelayproject'
-                    },
-                    {
-                        urls: ['turn:openrelay.metered.ca:443'],
                         username: 'openrelayproject',
                         credential: 'openrelayproject'
                     }
