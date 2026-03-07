@@ -72,17 +72,13 @@ function Room({ roomId }) {
 
         // when a call is received, answer it and set the remote stream to the video element
         peer.on('call', (call) => {
-            console.log('Guest: Received call from peer:', call.peer)
             try {
                 call.answer(null) // members don't send stream back
-                console.log('Guest: Answered call successfully')
 
                 call.on('stream', (remoteStream) => {
-                    console.log('Guest: Received remote stream with tracks:', remoteStream.getTracks().length)
                     if (remoteVideoRef.current) {
                         remoteVideoRef.current.srcObject = remoteStream
                         setActive('active') // Show the video container when stream is received
-                        console.log('Guest: Stream set to video element successfully')
                     } else {
                         console.error('Guest: remoteVideoRef is not available')
                     }
@@ -133,7 +129,7 @@ function Room({ roomId }) {
             console.log('Host: Calling peer with stream:', peerId)
             try {
                 const call = peerRef.current.call(peerId, streamRef.current)
-                console.log('Host: Call object created:', !!call)
+                // console.log('Host: Call object created:', !!call)
 
                 call.on('stream', () => {
                     console.log('Host: member connected to stream')
@@ -169,13 +165,13 @@ function Room({ roomId }) {
         hostVideoRef.current.crossOrigin = 'anonymous'
 
         hostVideoRef.current.onloadedmetadata = async () => {
-            console.log('Host: Video metadata loaded')
+            // console.log('Host: Video metadata loaded')
             try {
                 const playPromise = await hostVideoRef.current.play()
                 console.log('Host: Video playing', playPromise)
 
                 const stream = hostVideoRef.current.captureStream(30) // 30 FPS
-                console.log('Host: captureStream returned:', !!stream)
+                // console.log('Host: captureStream returned:', !!stream)
 
                 if (!stream) {
                     console.error('Host: captureStream returned null')
@@ -183,7 +179,7 @@ function Room({ roomId }) {
                 }
 
                 const tracks = stream.getTracks()
-                console.log('Host: Stream tracks count:', tracks.length)
+                // console.log('Host: Stream tracks count:', tracks.length)
 
                 if (tracks.length === 0) {
                     console.error('Host: Stream has no tracks')
@@ -199,10 +195,10 @@ function Room({ roomId }) {
 
                 // Call all existing peers (handles late joiners)
                 if (peerIds.length > 0) {
-                    console.log('Host: Calling', peerIds.length, 'existing peers')
+                    // console.log('Host: Calling', peerIds.length, 'existing peers')
                     peerIds.forEach(peerId => {
                         try {
-                            console.log('Host: Calling peer:', peerId)
+                            // console.log('Host: Calling peer:', peerId)
                             const call = peerRef.current.call(peerId, stream)
 
                             call.on('stream', () => {
