@@ -38,9 +38,27 @@ function Room({ roomId }) {
             config: {
                 iceServers: [
                     {
-                        urls: ['free.expressturn.com:3478'],
-                        username: '000000002088172890',
-                        credential: 'fIQs17mGWQlHXuJNNaLMMyxP/y8='
+                        urls: [
+                            'stun:stun.l.google.com:19302',
+                            'stun:stun1.l.google.com:19302',
+                            'stun:stun2.l.google.com:19302'
+                        ]
+                    },
+                    // Free TURN server for relay when P2P fails
+                    {
+                        urls: ['turn:openrelay.metered.ca:80'],
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    },
+                    {
+                        urls: [
+                            "stun:stun.cloudflare.com:3478",
+                            "turn:turn.cloudflare.com:3478?transport=udp",
+                            "turn:turn.cloudflare.com:3478?transport=tcp",
+                            "turns:turn.cloudflare.com:5349?transport=tcp"
+                        ],
+                        username: "g048add38be332105c89e4ed048b326c3debec056ca0705d32dbb5d63104e983",
+                        credential: "670d9ae88ae73d16c61ffad9686ebf17dd6d82472c4a74090d6c83771332c5b9"
                     }
                 ]
             }
@@ -158,7 +176,7 @@ function Room({ roomId }) {
 
                 const stream = hostVideoRef.current.captureStream(30) // 30 FPS
                 console.log('Host: captureStream returned:', !!stream)
-                
+
                 if (!stream) {
                     console.error('Host: captureStream returned null')
                     return
@@ -230,10 +248,10 @@ function Room({ roomId }) {
             }</p>
             <div className="video-container">
                 <div className={`box ${active}`}>
-                    <video 
+                    <video
                         ref={memberStatus === 'host' ? hostVideoRef : remoteVideoRef}
                         controls
-                     />
+                    />
                 </div>
                 {
                     memberStatus === 'host'
