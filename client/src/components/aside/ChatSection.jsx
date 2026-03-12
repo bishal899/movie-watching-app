@@ -51,7 +51,7 @@ function ChatSection() {
                                 </div>
                         ))
                     }
-                    <div ref={messagesEndRef} />}
+                    <div ref={messagesEndRef} />
                 </div>
                 <div className="send-message-container">
                     <input type="text" placeholder='type message' value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && sendMessage()} />
