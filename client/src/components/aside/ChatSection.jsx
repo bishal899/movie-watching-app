@@ -22,6 +22,7 @@ function ChatSection() {
     }, [messages])
 
     function sendMessage() {
+        if (!input) return
         socket.emit('send-message', username, input)
         setInput('')
     }
